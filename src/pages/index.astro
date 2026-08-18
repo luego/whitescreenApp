@@ -1,14 +1,6 @@
 ---
-import WhiteScreen from "../components/WhiteScreen.astro";
-import Layout from "../layouts/Layout.astro";
+import ScreenPage from "../components/ScreenPage.astro";
 import { colors } from "../data/colors";
-import { pageMeta } from "../i18n/translations";
-
 const color = colors[0];
-const locale = "en";
-const meta = pageMeta(locale, color);
 ---
-
-<Layout title={meta.title} description={meta.description} locale={locale} color={color}>
-  <WhiteScreen color={color} locale={locale} />
-</Layout>
+<ScreenPage color={color} locale="en" />

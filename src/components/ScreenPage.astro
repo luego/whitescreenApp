@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import WhiteScreen from "./WhiteScreen.astro";
+import type { ScreenColor } from "../data/colors";
+import { pageMeta, type Locale } from "../i18n/translations";
+interface Props { locale:Locale; color:ScreenColor }
+const {locale,color}=Astro.props; const meta=pageMeta(locale,color);
+---
+<Layout title={meta.title} description={meta.description} locale={locale} color={color}><WhiteScreen color={color} locale={locale} /></Layout>

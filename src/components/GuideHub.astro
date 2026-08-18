@@ -1,0 +1,7 @@
+---
+import { editorialCopy, editorialPath, guideSlugs, type GuideSlug } from "../i18n/editorial";
+import type { Locale } from "../i18n/translations";
+interface Props { locale:Locale; current?:GuideSlug; home?:boolean }
+const {locale,current,home=false}=Astro.props; const e=editorialCopy[locale];
+---
+<section class:list={["guide-hub",{"home-guides":home}]} aria-labelledby={home?"guides-title":undefined}><p class="eyebrow">{e.labels.guides}</p><h2 id={home?"guides-title":undefined}>{e.labels.allGuides}</h2><div>{guideSlugs.map(slug=><a href={editorialPath(locale,slug)} aria-current={current===slug?"page":undefined}><span>{e.guides[slug].title}</span><small>{e.labels.read} →</small></a>)}</div></section>

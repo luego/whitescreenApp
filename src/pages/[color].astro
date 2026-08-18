@@ -1,18 +1,11 @@
 ---
-import WhiteScreen from "../components/WhiteScreen.astro";
-import Layout from "../layouts/Layout.astro";
+import ScreenPage from "../components/ScreenPage.astro";
 import { colors } from "../data/colors";
-import { pageMeta } from "../i18n/translations";
 
 export function getStaticPaths() {
   return colors.slice(1).map((color) => ({ params: { color: color.slug }, props: { color } }));
 }
 
 const { color } = Astro.props;
-const locale = "en";
-const { title, description } = pageMeta(locale, color);
 ---
-
-<Layout title={title} description={description} locale={locale} color={color}>
-  <WhiteScreen color={color} locale={locale} />
-</Layout>
+<ScreenPage color={color} locale="en" />

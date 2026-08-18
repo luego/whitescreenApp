@@ -1,9 +1,10 @@
 ---
 import { colors, type ScreenColor } from "../data/colors";
-import { colorName, copy, localeNames, locales, localizedPath, screenHeading, type Locale } from "../i18n/translations";
+import { colorName, copy, locales, localizedPath, screenHeading, type Locale } from "../i18n/translations";
 import { colorDetail } from "../i18n/color-content";
-import { legalCopy, legalPath } from "../i18n/legal";
-import { editorialCopy, editorialPath, guideSlugs } from "../i18n/editorial";
+import SiteHeader from "./SiteHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+import GuideHub from "./GuideHub.astro";
 interface Props {
   color: ScreenColor;
   locale: Locale;
@@ -12,32 +13,13 @@ const { color, locale } = Astro.props;
 const t = copy[locale];
 const currentColor = colorName(locale, color);
 const detail = colorDetail(locale, color);
-const legal = legalCopy[locale];
-const editorial = editorialCopy[locale];
+const languagePaths = Object.fromEntries(locales.map(item => [item, localizedPath(item, color)])) as Record<Locale,string>;
 const faqs = t.faq.map(({ q, a }) => ({ question: q, answer: a }));
 const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) };
 ---
 
-<main x-data={`screenTool('${color.hex}')`} x-init="initTheme()" class="site-shell">
-  <header class="topbar">
-    <a href={localizedPath(locale)} class="brand" aria-label="White Screen"
-      ><span class="brand-mark" aria-hidden="true"></span><span
-        >White Screen</span
-      ></a
-    >
-    <div class="header-actions">
-      <span class="top-note">{t.free}</span>
-      <details class="language-menu">
-        <summary aria-label={t.language} title={t.language}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg><span>{locale.toUpperCase()}</span></summary>
-        <div>{locales.map((item) => <a href={localizedPath(item, color)} lang={item} aria-current={item === locale ? "page" : undefined}>{localeNames[item]}</a>)}</div>
-      </details>
-      <div class="theme-switcher" role="group" aria-label="Tema de la interfaz">
-        <button @click="setTheme('light')" :class="themeMode === 'light' && 'active'" :aria-pressed="themeMode === 'light'" class="theme-button" type="button" aria-label={t.light} title={t.light}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg></button>
-        <button @click="setTheme('dark')" :class="themeMode === 'dark' && 'active'" :aria-pressed="themeMode === 'dark'" class="theme-button" type="button" aria-label={t.dark} title={t.dark}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg></button>
-        <button @click="setTheme('system')" :class="themeMode === 'system' && 'active'" :aria-pressed="themeMode === 'system'" class="theme-button" type="button" aria-label={t.system} title={t.system}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg></button>
-      </div>
-    </div>
-  </header>
+<main x-data={`screenTool('${color.hex}')`} class="site-shell">
+  <SiteHeader locale={locale} languagePaths={languagePaths} showFree />
 
   <section class="screen-hero" aria-labelledby="page-title">
     <div class="screen-hero-copy">
@@ -201,80 +183,8 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
     <div>{colors.filter((item) => item.slug !== color.slug).map((item) => <a href={localizedPath(locale, item)}><i style={`--related-color:${item.hex}`}></i>{screenHeading(locale, item)}</a>)}</div>
   </nav>
 
-  <section class="guide-hub home-guides" aria-labelledby="guides-title"><p class="eyebrow">{editorial.labels.guides}</p><h2 id="guides-title">{editorial.labels.allGuides}</h2><div>{guideSlugs.map((slug)=><a href={editorialPath(locale,slug)}><span>{editorial.guides[slug].title}</span><small>{editorial.labels.read} →</small></a>)}</div></section>
+  <GuideHub locale={locale} home />
 
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <footer>
-    <div class="footer-copy"><a href={localizedPath(locale)}>White Screen</a><span>{t.footer}</span></div>
-    <div class="footer-navs">
-      <nav class="footer-legal" aria-label="Legal"><a href={editorialPath(locale,"about")}>{editorial.labels.about}</a><a href={legalPath(locale, "privacy")}>{legal.nav.privacy}</a><a href={legalPath(locale, "terms")}>{legal.nav.terms}</a><a href={legalPath(locale, "feedback")}>{legal.nav.feedback}</a></nav>
-      <nav class="footer-languages" aria-label={t.language}>{locales.map((item) => <a href={localizedPath(item, color)} lang={item} aria-current={item === locale ? "page" : undefined}>{localeNames[item]}</a>)}</nav>
-    </div>
-  </footer>
+  <SiteFooter locale={locale} languagePaths={languagePaths} />
 </main>
-
-<script>
-  document.addEventListener("alpine:init", () => {
-    window.Alpine.data("screenTool", (initialColor: string) => ({
-      width: 1920,
-      height: 1080,
-      customColor: initialColor,
-      themeMode: "system",
-      initTheme() {
-        const saved = localStorage.getItem("theme-mode");
-        this.themeMode = ["light", "dark", "system"].includes(saved || "") ? saved : "system";
-        this.applyTheme();
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (this.themeMode === "system") this.applyTheme(); });
-      },
-      setTheme(mode: string) {
-        this.themeMode = mode;
-        localStorage.setItem("theme-mode", mode);
-        this.applyTheme();
-      },
-      applyTheme() {
-        const dark = this.themeMode === "dark" || (this.themeMode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.dataset.theme = dark ? "night" : "bumblebee";
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0f172a" : "#facc15");
-      },
-      get validColor() {
-        return /^#[0-9a-f]{6}$/i.test(this.customColor)
-          ? this.customColor
-          : initialColor;
-      },
-      get previewText() {
-        const value = this.validColor.slice(1);
-        const red = parseInt(value.slice(0, 2), 16),
-          green = parseInt(value.slice(2, 4), 16),
-          blue = parseInt(value.slice(4, 6), 16);
-        return (red * 299 + green * 587 + blue * 114) / 1000 > 145
-          ? "#141414"
-          : "#ffffff";
-      },
-      setSize(width: number, height: number) {
-        this.width = width;
-        this.height = height;
-      },
-      openFullscreen() {
-        (this.$refs.canvas as HTMLElement).requestFullscreen?.();
-      },
-      downloadImage() {
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.max(1, Math.min(7680, Number(this.width) || 1920));
-        canvas.height = Math.max(1, Math.min(4320, Number(this.height) || 1080));
-        const context = canvas.getContext("2d");
-        if (!context) return;
-        context.fillStyle = this.validColor;
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        canvas.toBlob((blob) => {
-          if (!blob) return;
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `${this.validColor.slice(1)}-screen-${canvas.width}x${canvas.height}.png`;
-          link.click();
-          URL.revokeObjectURL(url);
-        }, "image/png");
-      },
-    }));
-  });
-</script>

@@ -1,0 +1,15 @@
+---
+import ThemeSwitcher from "./ThemeSwitcher.astro";
+import { copy, localeNames, locales, localizedPath, type Locale } from "../i18n/translations";
+interface Props { locale:Locale; languagePaths:Record<Locale,string>; showFree?:boolean; secondaryLink?:{href:string;label:string} }
+const { locale, languagePaths, showFree=false, secondaryLink } = Astro.props; const t=copy[locale];
+---
+<header class="topbar" x-data x-init="$store.theme.init()">
+  <a href={localizedPath(locale)} class="brand" aria-label="White Screen"><span class="brand-mark" aria-hidden="true"></span><span>White Screen</span></a>
+  <div class="header-actions">
+    {showFree && <span class="top-note">{t.free}</span>}
+    {secondaryLink && <a class="header-text-link" href={secondaryLink.href}>{secondaryLink.label}</a>}
+    <details class="language-menu"><summary aria-label={t.language} title={t.language}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg><span>{locale.toUpperCase()}</span></summary><div>{locales.map(item=><a href={languagePaths[item]} lang={item} aria-current={item===locale?"page":undefined}>{localeNames[item]}</a>)}</div></details>
+    <ThemeSwitcher locale={locale} />
+  </div>
+</header>

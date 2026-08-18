@@ -1,0 +1,8 @@
+---
+import { copy, localeNames, locales, localizedPath, type Locale } from "../i18n/translations";
+import { legalCopy, legalPath } from "../i18n/legal";
+import { editorialCopy, editorialPath } from "../i18n/editorial";
+interface Props { locale:Locale; languagePaths?:Record<Locale,string> }
+const { locale, languagePaths }=Astro.props; const t=copy[locale]; const legal=legalCopy[locale]; const editorial=editorialCopy[locale];
+---
+<footer><div class="footer-copy"><a href={localizedPath(locale)}>White Screen</a><span>{t.footer}</span></div><div class="footer-navs"><nav class="footer-legal" aria-label="Legal"><a href={editorialPath(locale,"about")}>{editorial.labels.about}</a><a href={legalPath(locale,"privacy")}>{legal.nav.privacy}</a><a href={legalPath(locale,"terms")}>{legal.nav.terms}</a><a href={legalPath(locale,"feedback")}>{legal.nav.feedback}</a></nav>{languagePaths && <nav class="footer-languages" aria-label={t.language}>{locales.map(item=><a href={languagePaths[item]} lang={item} aria-current={item===locale?"page":undefined}>{localeNames[item]}</a>)}</nav>}</div></footer>
