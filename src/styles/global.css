@@ -141,3 +141,11 @@ footer{gap:30px;padding:24px 0}
 @media(max-width:800px){.content-section{padding:70px 20px}.how-to,.related-colors{grid-template-columns:1fr;gap:38px}.seo-copy+.content-section{border-top:1px solid var(--color-base-300)}}
 @media(max-width:520px){.content-section{padding:60px 20px}.faq-list summary{font-size:15px}.related-colors{padding-left:20px;padding-right:20px}}
 .section-lead{max-width:720px;margin:26px 0 0;color:color-mix(in oklab,var(--color-base-content),transparent 38%);font-size:16px;line-height:1.75}
+
+.download-button{display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:9px;width:230px;min-height:42px;margin:16px 0 0 auto;padding:9px 12px;color:var(--color-primary-content);background:var(--color-primary);border:1px solid var(--color-primary);border-radius:10px;font-size:13px;font-weight:750;text-align:left;cursor:pointer;box-shadow:0 6px 18px color-mix(in oklab,var(--color-primary),transparent 76%);transition:transform .16s ease,filter .16s ease}
+.download-button:hover{filter:brightness(.96);transform:translateY(-1px)}
+.download-button:active{transform:translateY(1px)}
+.download-button:focus-visible{outline:3px solid color-mix(in oklab,var(--color-primary),white 35%);outline-offset:3px}
+.download-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.download-button small{font-size:11px;font-weight:650;opacity:.72}
+@media(max-width:800px){.download-button{width:100%;min-height:54px;margin:16px 0 0;padding:14px 16px;border-radius:13px;font-size:15px;grid-template-columns:20px 1fr auto;gap:11px}.download-button svg{width:20px;height:20px}.download-button small{font-size:10px}}

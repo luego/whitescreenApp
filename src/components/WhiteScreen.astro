@@ -146,6 +146,11 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
           /></label
         >
       </div>
+      <button class="download-button" type="button" @click="downloadImage()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 20h14"></path></svg>
+        <span>{t.download}</span>
+        <small x-text="`${width} × ${height}`">1920 × 1080</small>
+      </button>
     </div>
   </section>
 
@@ -244,6 +249,24 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
       },
       openFullscreen() {
         (this.$refs.canvas as HTMLElement).requestFullscreen?.();
+      },
+      downloadImage() {
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.min(7680, Number(this.width) || 1920));
+        canvas.height = Math.max(1, Math.min(4320, Number(this.height) || 1080));
+        const context = canvas.getContext("2d");
+        if (!context) return;
+        context.fillStyle = this.validColor;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `${this.validColor.slice(1)}-screen-${canvas.width}x${canvas.height}.png`;
+          link.click();
+          URL.revokeObjectURL(url);
+        }, "image/png");
       },
     }));
   });
