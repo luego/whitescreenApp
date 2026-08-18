@@ -1,0 +1,257 @@
+---
+
+---
+
+<!-- Inicialización del estado global con Alpine.js -->
+<div
+  x-data="{ 
+      color: '#ffffff', 
+      width: 1920, 
+      height: 1080,
+      
+      // Función para aplicar tamaños predefinidos
+      setSize(w, h) {
+        this.width = w;
+        this.height = h;
+      },
+      
+      // Función nativa para activar la pantalla completa (Fullscreen API)
+      openFullscreen() {
+        let el = this.$refs.canvas;
+        if (el.requestFullscreen) {
+          el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) { // Soporte para Safari anterior
+          el.webkitRequestFullscreen();
+        }
+      }
+    }"
+  class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-8 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700"
+>
+  <!-- COLUMNA IZQUIERDA: PANEL DE CONTROL -->
+  <div class="md:col-span-1 flex flex-col gap-6">
+    <div>
+      <h1 class="text-2xl font-bold text-white tracking-tight">White Screen</h1>
+      <p class="text-xs text-gray-400 mt-1">
+        Duplicado exacto del panel de configuración.
+      </p>
+    </div>
+
+    <!-- Sección 1: Entradas Manuales (Ancho y Alto) -->
+    <div class="bg-gray-850 p-4 rounded-xl border border-gray-700">
+      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+        Resolución Manual
+      </p>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Ancho (px)</label>
+          <input
+            type="number"
+            x-model.number="width"
+            class="w-full bg-gray-750 border border-gray-600 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Alto (px)</label>
+          <input
+            type="number"
+            x-model.number="height"
+            class="w-full bg-gray-750 border border-gray-600 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500"
+          />
+        </div>
+      </div>
+      <!-- Muestra dinámicamente la relación de aspecto aproximada -->
+      <p class="text-right text-[11px] text-gray-500 mt-2">
+        Aspecto: <span
+          x-text="(width && height) ? (width / height).toFixed(2) : 0.00"
+        ></span>:1
+      </p>
+    </div>
+
+    <!-- Sección 2: Tamaños Predefinidos (480p a 8K) -->
+    <div class="bg-gray-850 p-4 rounded-xl border border-gray-700">
+      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+        Tamaños Estándar
+      </p>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          @click="setSize(854, 480)"
+          :class="width === 854 && height === 480 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650'"
+          class="py-1.5 text-xs font-medium rounded transition"
+          >480p (SD)</button
+        >
+        <button
+          @click="setSize(1280, 720)"
+          :class="width === 1280 && height === 720 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650'"
+          class="py-1.5 text-xs font-medium rounded transition"
+          >720p (HD)</button
+        >
+        <button
+          @click="setSize(1920, 1080)"
+          :class="width === 1920 && height === 1080 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650'"
+          class="py-1.5 text-xs font-medium rounded transition"
+          >1080p (FHD)</button
+        >
+        <button
+          @click="setSize(2560, 1440)"
+          :class="width === 2560 && height === 1440 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650'"
+          class="py-1.5 text-xs font-medium rounded transition"
+          >1440p (2K)</button
+        >
+        <button
+          @click="setSize(3840, 2160)"
+          :class="width === 3840 && height === 2160 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650'"
+          class="py-1.5 text-xs font-medium rounded transition"
+          >2160p (4K)</button
+        >
+        <button
+          @click="setSize(7680, 4320)"
+          :class="width === 7680 && height === 4320 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650'"
+          class="py-1.5 text-xs font-medium rounded transition"
+          >4320p (8K)</button
+        >
+      </div>
+    </div>
+
+    <!-- Sección 3: Selector de Color Personalizado -->
+    <!-- Sección 3: Paleta Completa de Colores (Igual a whitescreen.online) -->
+    <div class="bg-gray-850 p-4 rounded-xl border border-gray-700">
+      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+        Paleta de Colores
+      </p>
+
+      <!-- Cuadrícula de colores predefinidos -->
+      <div class="grid grid-cols-5 gap-2 mb-4">
+        <!-- Blanco -->
+        <button
+          @click="color = '#ffffff'"
+          :class="color === '#ffffff' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-white rounded-lg border border-gray-300 transition transform active:scale-95"
+          title="Blanco"></button>
+        <!-- Negro -->
+        <button
+          @click="color = '#000000'"
+          :class="color === '#000000' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-black rounded-lg border border-gray-700 transition transform active:scale-95"
+          title="Negro"></button>
+        <!-- Gris -->
+        <button
+          @click="color = '#808080'"
+          :class="color === '#808080' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-gray-500 rounded-lg transition transform active:scale-95"
+          title="Gris"></button>
+        <!-- Rojo -->
+        <button
+          @click="color = '#ff0000'"
+          :class="color === '#ff0000' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-red-600 rounded-lg transition transform active:scale-95"
+          title="Rojo"></button>
+        <!-- Verde -->
+        <button
+          @click="color = '#00ff00'"
+          :class="color === '#00ff00' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-green-500 rounded-lg transition transform active:scale-95"
+          title="Verde"></button>
+        <!-- Azul -->
+        <button
+          @click="color = '#0000ff'"
+          :class="color === '#0000ff' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-blue-600 rounded-lg transition transform active:scale-95"
+          title="Azul"></button>
+        <!-- Cian -->
+        <button
+          @click="color = '#00ffff'"
+          :class="color === '#00ffff' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-cyan-400 rounded-lg transition transform active:scale-95"
+          title="Cian"></button>
+        <!-- Magenta -->
+        <button
+          @click="color = '#ff00ff'"
+          :class="color === '#ff00ff' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-fuchsia-500 rounded-lg transition transform active:scale-95"
+          title="Magenta"></button>
+        <!-- Amarillo -->
+        <button
+          @click="color = '#ffff00'"
+          :class="color === '#ffff00' ? 'ring-2 ring-blue-500' : ''"
+          class="aspect-square bg-yellow-400 rounded-lg transition transform active:scale-95"
+          title="Amarillo"></button>
+
+        <!-- Botón indicador del color personalizado actual -->
+        <div
+          :style="{ backgroundColor: color }"
+          class="aspect-square rounded-lg border border-gray-600 shadow-inner"
+          title="Color Actual"
+        >
+        </div>
+      </div>
+
+      <!-- Input Selector Manual -->
+      <div
+        class="flex items-center gap-3 bg-gray-750 p-2 rounded border border-gray-600"
+      >
+        <input
+          type="color"
+          x-model="color"
+          class="w-8 h-8 bg-transparent border-0 cursor-pointer rounded"
+        />
+        <div class="flex-1">
+          <input
+            type="text"
+            x-model="color"
+            class="w-full bg-transparent text-sm font-mono text-white focus:outline-none uppercase"
+            maxlength="7"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLUMNA DERECHA: RECTÁNGULO DE VISTA PREVIA (CANVAS) -->
+  <div
+    class="md:col-span-2 flex flex-col justify-center items-center bg-gray-950 p-6 rounded-xl border border-gray-700 min-h-87.5"
+  >
+    <p class="text-xs text-gray-400 mb-4 font-medium">
+      Haz clic en el cuadro para alternar la pantalla completa
+    </p>
+
+    <!-- Contenedor externo que limita el tamaño máximo en la interfaz para no romper el layout -->
+    <div
+      class="w-full max-w-lg aspect-video flex items-center justify-center bg-gray-900 rounded border border-dashed border-gray-600 p-2"
+    >
+      <!-- El Canvas Dinámico que se vuelve Fullscreen -->
+      <!-- Usamos x-bind:style para mantener las proporciones calculadas del aspecto exacto -->
+      <!-- El Canvas Dinámico corregido para Astro -->
+      <div
+        x-ref="canvas"
+        @click="openFullscreen()"
+        x-bind:style="{ 
+            backgroundColor: color, 
+            aspectRatio: width / height 
+          }"
+        class="max-w-full max-h-full w-full shadow-2xl cursor-pointer transition-colors duration-200 flex items-center justify-center group relative"
+      >
+        <!-- Este texto solo se ve al pasar el mouse por encima en la interfaz web -->
+        <span
+          class="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity text-sm pointer-events-none rounded select-none"
+        >
+          PANTALLA COMPLETA ({(<span x-text="width" />)}x{
+            (<span x-text="height" />)
+          })
+        </span>
+      </div>
+    </div>
+
+    <!-- Estado actual debajo del Canvas -->
+    <div class="mt-4 flex gap-4 text-xs text-gray-400 font-mono">
+      <span
+        >Resolución: <strong
+          class="text-white"
+          x-text="`${width} x ${height} px`"></strong></span
+      >
+      <span
+        >Color: <strong class="text-white" x-text="color.toUpperCase()"
+        ></strong></span
+      >
+    </div>
+  </div>
+</div>
