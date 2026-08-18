@@ -1,0 +1,103 @@
+import type { ScreenColor } from "../data/colors";
+import type { Locale } from "./translations";
+
+type Detail = { title: string; text: string };
+type ColorDetails = Record<string, Detail>;
+
+const details: Record<Locale, ColorDetails> = {
+  en: {
+    white:{title:"Soft light and surface inspection",text:"White reveals dust, dark dead pixels, brightness falloff, and panel discoloration. It also works as neutral fill light for calls, photos, tracing, and reading."},
+    black:{title:"OLED and bright-pixel testing",text:"Black makes glowing or stuck pixels easy to spot in a dark room. On OLED displays it also helps inspect true black levels, blooming, and light leakage."},
+    red:{title:"Red subpixel and RGB testing",text:"A solid red field helps identify weak red subpixels, color contamination, and uneven tint. Use it with green and blue for a complete RGB display check."},
+    green:{title:"Chroma key and green-channel testing",text:"Green is useful for simple chroma-key backgrounds and for checking the green subpixel channel. Look for dark points, tint shifts, and uneven saturation."},
+    blue:{title:"Blue-channel and cool-tone testing",text:"Blue exposes weak blue subpixels, banding, and cool-tone uniformity issues. It is also a clean background for projection, photography, and ambient light."},
+    yellow:{title:"Warm light and combined-channel testing",text:"Yellow activates red and green channels together, making it useful for comparing warm tones and finding color imbalance. It can also provide bright ambient light."},
+    orange:{title:"Warm ambient light and skin-tone contrast",text:"Orange creates a softer warm glow for evening use, photography, and video. It also helps evaluate warm gradients, banding, and contrast around skin tones."},
+    pink:{title:"Creative background and magenta balance",text:"Pink works as a vivid background for photos, streams, and presentations. It can reveal uneven red-blue blending and unwanted green contamination."},
+    purple:{title:"Creative lighting and red-blue balance",text:"Purple combines red and blue channels for atmospheric lighting and creative backgrounds. Check for patchy saturation, banding, or channel imbalance."},
+    cyan:{title:"Cyan balance and red-channel contrast",text:"Cyan combines green and blue while excluding red. It helps reveal unwanted red pixels, channel imbalance, and uneven cool-color reproduction."},
+    gray:{title:"Neutrality, banding, and uniformity",text:"Gray is ideal for spotting brightness variation, color casts, dirty-screen effect, and gradient banding without the distraction of a saturated color."},
+  },
+  de: {
+    white:{title:"Weiches Licht und Oberflächenprüfung",text:"Weiß zeigt Staub, dunkle Pixelfehler, Helligkeitsabfall und Verfärbungen. Es eignet sich auch als neutrales Licht für Videoanrufe, Fotos und Lesen."},
+    black:{title:"OLED- und Leuchtpixel-Test",text:"Schwarz macht leuchtende oder festsitzende Pixel im dunklen Raum sichtbar. Bei OLED lassen sich Schwarzwert, Blooming und Lichthöfe prüfen."},
+    red:{title:"Rotkanal- und RGB-Test",text:"Eine rote Fläche zeigt schwache rote Subpixel, Farbstiche und ungleichmäßige Tönung. Zusammen mit Grün und Blau entsteht ein vollständiger RGB-Test."},
+    green:{title:"Chroma Key und Grünkanal-Test",text:"Grün eignet sich als einfacher Chroma-Key-Hintergrund und zur Prüfung grüner Subpixel auf dunkle Punkte, Farbverschiebungen und ungleiche Sättigung."},
+    blue:{title:"Blaukanal und kühle Farbtöne",text:"Blau zeigt schwache blaue Subpixel, Banding und Probleme bei kühlen Farbtönen. Es dient außerdem als klarer Hintergrund und Umgebungslicht."},
+    yellow:{title:"Warmes Licht und kombinierter Kanaltest",text:"Gelb aktiviert Rot und Grün gleichzeitig. So lassen sich warme Töne, Farbungleichgewichte und helle Umgebungsbeleuchtung beurteilen."},
+    orange:{title:"Warmes Licht und Hauttonkontrast",text:"Orange erzeugt ein weiches Abendlicht für Foto und Video und hilft bei der Prüfung warmer Verläufe, Banding und Hauttonkontrasten."},
+    pink:{title:"Kreativer Hintergrund und Magenta-Balance",text:"Pink ist ein lebhafter Hintergrund für Fotos und Streams und zeigt ungleichmäßige Rot-Blau-Mischung oder unerwünschte Grünanteile."},
+    purple:{title:"Kreatives Licht und Rot-Blau-Balance",text:"Violett kombiniert Rot und Blau für atmosphärisches Licht. Prüfe fleckige Sättigung, Banding und Unterschiede zwischen den Kanälen."},
+    cyan:{title:"Cyan-Balance und Rotkontrast",text:"Cyan kombiniert Grün und Blau ohne Rot. Dadurch werden rote Fehlpixel, Kanalungleichgewicht und ungleichmäßige kühle Farben sichtbar."},
+    gray:{title:"Neutralität, Banding und Gleichmäßigkeit",text:"Grau zeigt Helligkeitsunterschiede, Farbstiche, Dirty-Screen-Effekt und Verlaufsbanding ohne Ablenkung durch kräftige Farben."},
+  },
+  es: {
+    white:{title:"Luz suave y revisión de la superficie",text:"El blanco revela polvo, píxeles oscuros, pérdidas de brillo y cambios de tono. También sirve como luz neutra para videollamadas, fotos, calcar y leer."},
+    black:{title:"Prueba OLED y píxeles brillantes",text:"El negro permite encontrar píxeles iluminados o atascados en una habitación oscura. En OLED ayuda a revisar negros, blooming y fugas de luz."},
+    red:{title:"Prueba del subpíxel rojo y RGB",text:"Un fondo rojo permite detectar subpíxeles rojos débiles, contaminación de color y tintes irregulares. Combínalo con verde y azul para una prueba RGB."},
+    green:{title:"Chroma key y prueba del canal verde",text:"El verde funciona como fondo sencillo para chroma key y para revisar el canal verde. Busca puntos oscuros, cambios de tono y saturación desigual."},
+    blue:{title:"Canal azul y tonos fríos",text:"El azul descubre subpíxeles débiles, banding y problemas de uniformidad en tonos fríos. También funciona como fondo para proyección y fotografía."},
+    yellow:{title:"Luz cálida y prueba combinada",text:"El amarillo activa juntos los canales rojo y verde. Ayuda a comparar tonos cálidos, encontrar desequilibrios y crear una iluminación ambiental brillante."},
+    orange:{title:"Luz cálida y contraste de piel",text:"El naranja produce un resplandor suave para fotografía y vídeo. También permite evaluar degradados cálidos, banding y contraste alrededor de tonos de piel."},
+    pink:{title:"Fondo creativo y equilibrio magenta",text:"El rosa crea un fondo vivo para fotos, streaming y presentaciones. Puede revelar mezclas desiguales de rojo y azul o contaminación verde."},
+    purple:{title:"Iluminación creativa y equilibrio rojo-azul",text:"El morado combina rojo y azul para fondos e iluminación ambiental. Permite encontrar saturación irregular, banding y desequilibrios entre canales."},
+    cyan:{title:"Equilibrio cian y contraste del rojo",text:"El cian combina verde y azul sin rojo. Ayuda a revelar píxeles rojos no deseados, desequilibrios y reproducción desigual de colores fríos."},
+    gray:{title:"Neutralidad, banding y uniformidad",text:"El gris es ideal para detectar diferencias de brillo, dominantes de color, efecto de pantalla sucia y banding sin la distracción de un color saturado."},
+  },
+  pt: {
+    white:{title:"Luz suave e inspeção da superfície",text:"O branco revela poeira, pixels escuros, perda de brilho e alterações de tom. Também funciona como luz neutra para chamadas, fotos, desenho e leitura."},
+    black:{title:"Teste OLED e pixels brilhantes",text:"O preto facilita encontrar pixels acesos ou presos em ambiente escuro. Em OLED, ajuda a verificar nível de preto, blooming e vazamento de luz."},
+    red:{title:"Teste do subpixel vermelho e RGB",text:"Um campo vermelho revela subpixels fracos, contaminação e tonalidade irregular. Combine com verde e azul para um teste RGB completo."},
+    green:{title:"Chroma key e teste do canal verde",text:"O verde serve como fundo simples de chroma key e para verificar o canal verde, pontos escuros, mudanças de tom e saturação desigual."},
+    blue:{title:"Canal azul e tons frios",text:"O azul evidencia subpixels fracos, banding e problemas de uniformidade em tons frios. Também serve como fundo para projeção e fotografia."},
+    yellow:{title:"Luz quente e teste combinado",text:"O amarelo ativa vermelho e verde juntos, ajudando a comparar tons quentes, localizar desequilíbrios e produzir luz ambiente clara."},
+    orange:{title:"Luz quente e contraste da pele",text:"O laranja cria brilho suave para fotos e vídeos e ajuda a avaliar gradientes quentes, banding e contraste em tons de pele."},
+    pink:{title:"Fundo criativo e equilíbrio magenta",text:"O rosa oferece um fundo vivo para fotos e transmissões e pode revelar mistura desigual de vermelho e azul ou contaminação verde."},
+    purple:{title:"Luz criativa e equilíbrio vermelho-azul",text:"O roxo combina vermelho e azul para iluminação e fundos criativos. Verifique saturação irregular, banding e desequilíbrio dos canais."},
+    cyan:{title:"Equilíbrio ciano e contraste vermelho",text:"O ciano combina verde e azul sem vermelho, revelando pixels vermelhos indesejados, desequilíbrios e reprodução fria irregular."},
+    gray:{title:"Neutralidade, banding e uniformidade",text:"O cinza ajuda a encontrar variação de brilho, dominantes, efeito de tela suja e banding sem a distração de uma cor saturada."},
+  },
+  fr: {
+    white:{title:"Lumière douce et inspection de surface",text:"Le blanc révèle poussière, pixels sombres, baisse de luminosité et décoloration. Il sert aussi de lumière neutre pour appels, photos, dessin et lecture."},
+    black:{title:"Test OLED et pixels lumineux",text:"Le noir facilite la détection des pixels allumés ou bloqués dans l’obscurité. Sur OLED, il aide à contrôler noirs, blooming et fuites de lumière."},
+    red:{title:"Test du sous-pixel rouge et RGB",text:"Un fond rouge révèle les sous-pixels faibles, les contaminations et les teintes irrégulières. Associez-le au vert et au bleu pour un test RGB."},
+    green:{title:"Chroma key et canal vert",text:"Le vert sert de fond chroma key simple et permet de vérifier le canal vert, les points sombres, les dérives et la saturation inégale."},
+    blue:{title:"Canal bleu et tons froids",text:"Le bleu révèle les sous-pixels faibles, le banding et les problèmes d’uniformité des tons froids. Il convient aussi à la projection et à la photo."},
+    yellow:{title:"Lumière chaude et test combiné",text:"Le jaune active rouge et vert ensemble pour comparer les tons chauds, trouver les déséquilibres et créer une lumière ambiante vive."},
+    orange:{title:"Lumière chaude et contraste des peaux",text:"L’orange produit une lueur douce pour photo et vidéo et aide à évaluer dégradés chauds, banding et contraste des tons chair."},
+    pink:{title:"Fond créatif et équilibre magenta",text:"Le rose crée un fond vif pour photos et streaming et peut révéler un mélange rouge-bleu irrégulier ou une contamination verte."},
+    purple:{title:"Éclairage créatif et équilibre rouge-bleu",text:"Le violet combine rouge et bleu pour les fonds créatifs. Contrôlez saturation inégale, banding et déséquilibre des canaux."},
+    cyan:{title:"Équilibre cyan et contraste rouge",text:"Le cyan combine vert et bleu sans rouge, révélant les pixels rouges indésirables et les défauts de reproduction des couleurs froides."},
+    gray:{title:"Neutralité, banding et uniformité",text:"Le gris révèle variations de luminosité, dominantes, effet d’écran sale et banding sans la distraction d’une couleur saturée."},
+  },
+  it: {
+    white:{title:"Luce morbida e controllo della superficie",text:"Il bianco rivela polvere, pixel scuri, cali di luminosità e alterazioni. Serve anche come luce neutra per chiamate, foto, disegno e lettura."},
+    black:{title:"Test OLED e pixel luminosi",text:"Il nero rende visibili pixel accesi o bloccati al buio. Sugli OLED aiuta a controllare livello del nero, blooming e perdite di luce."},
+    red:{title:"Test del subpixel rosso e RGB",text:"Un campo rosso rivela subpixel deboli, contaminazioni e tinte irregolari. Abbinalo a verde e blu per un test RGB completo."},
+    green:{title:"Chroma key e test del canale verde",text:"Il verde è utile come semplice sfondo chroma key e per controllare il canale verde, punti scuri, variazioni e saturazione irregolare."},
+    blue:{title:"Canale blu e tonalità fredde",text:"Il blu evidenzia subpixel deboli, banding e problemi di uniformità nei toni freddi. È anche uno sfondo per proiezione e fotografia."},
+    yellow:{title:"Luce calda e test combinato",text:"Il giallo attiva rosso e verde insieme, utile per confrontare toni caldi, trovare squilibri e creare una luce ambiente brillante."},
+    orange:{title:"Luce calda e contrasto della pelle",text:"L’arancione crea una luce morbida per foto e video e aiuta a valutare gradienti caldi, banding e contrasto delle tonalità della pelle."},
+    pink:{title:"Sfondo creativo ed equilibrio magenta",text:"Il rosa offre uno sfondo vivace per foto e streaming e può rivelare fusione rosso-blu irregolare o contaminazione verde."},
+    purple:{title:"Luce creativa ed equilibrio rosso-blu",text:"Il viola combina rosso e blu per illuminazione e sfondi creativi. Controlla saturazione irregolare, banding e squilibrio dei canali."},
+    cyan:{title:"Equilibrio ciano e contrasto rosso",text:"Il ciano combina verde e blu senza rosso, mostrando pixel rossi indesiderati e difetti nella riproduzione dei colori freddi."},
+    gray:{title:"Neutralità, banding e uniformità",text:"Il grigio aiuta a trovare variazioni di luminosità, dominanti, effetto schermo sporco e banding senza colori saturi."},
+  },
+  nl: {
+    white:{title:"Zacht licht en oppervlaktecontrole",text:"Wit toont stof, donkere pixels, helderheidsverlies en verkleuring. Het werkt ook als neutraal licht voor gesprekken, foto’s, overtrekken en lezen."},
+    black:{title:"OLED- en heldere-pixeltest",text:"Zwart maakt oplichtende of vastzittende pixels zichtbaar in een donkere ruimte. Op OLED controleer je zwartniveau, blooming en lichtlekkage."},
+    red:{title:"Rode subpixel- en RGB-test",text:"Een rood vlak toont zwakke rode subpixels, kleurvervuiling en ongelijke tint. Combineer met groen en blauw voor een volledige RGB-test."},
+    green:{title:"Chroma key en groenkanaaltest",text:"Groen werkt als eenvoudige chroma-keyachtergrond en voor controle van het groene kanaal, donkere punten, tintverschuiving en ongelijke verzadiging."},
+    blue:{title:"Blauwkanaal en koele tinten",text:"Blauw toont zwakke subpixels, banding en problemen met koele uniformiteit. Het is ook een heldere achtergrond voor projectie en fotografie."},
+    yellow:{title:"Warm licht en gecombineerde kanaaltest",text:"Geel activeert rood en groen samen om warme tinten en kleurbalans te vergelijken en helder omgevingslicht te maken."},
+    orange:{title:"Warm licht en huidtooncontrast",text:"Oranje geeft een zachte warme gloed voor foto en video en helpt warme verlopen, banding en contrast bij huidtinten beoordelen."},
+    pink:{title:"Creatieve achtergrond en magentabalans",text:"Roze is een levendige achtergrond voor foto’s en streams en toont ongelijke rood-blauwmenging of ongewenst groen."},
+    purple:{title:"Creatief licht en rood-blauwbalans",text:"Paars combineert rood en blauw voor sfeerverlichting en achtergronden. Controleer vlekkerige verzadiging, banding en kanaalverschillen."},
+    cyan:{title:"Cyaanbalans en roodcontrast",text:"Cyaan combineert groen en blauw zonder rood en toont ongewenste rode pixels, kanaalverschillen en ongelijke koele kleuren."},
+    gray:{title:"Neutraliteit, banding en uniformiteit",text:"Grijs toont helderheidsverschillen, kleurzweem, dirty-screen-effect en banding zonder afleiding van een verzadigde kleur."},
+  },
+};
+
+export function colorDetail(locale: Locale, color: ScreenColor): Detail {
+  return details[locale][color.name.toLowerCase()];
+}

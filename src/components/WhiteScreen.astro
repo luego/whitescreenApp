@@ -1,14 +1,15 @@
 ---
 import { colors, type ScreenColor } from "../data/colors";
 import { colorName, copy, localeNames, locales, localizedPath, screenHeading, type Locale } from "../i18n/translations";
+import { colorDetail } from "../i18n/color-content";
 interface Props {
   color: ScreenColor;
   locale: Locale;
 }
 const { color, locale } = Astro.props;
-const isWhite = color.slug === "";
 const t = copy[locale];
 const currentColor = colorName(locale, color);
+const detail = colorDetail(locale, color);
 const faqs = t.faq.map(({ q, a }) => ({ question: q, answer: a }));
 const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) };
 ---
@@ -158,10 +159,10 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
       </article>
       <article>
         <span>02</span><h3>
-          {isWhite ? t.whiteCard.title : t.colorCard.title}
+          {detail.title}
         </h3><p>
           {
-            isWhite ? t.whiteCard.text : t.colorCard.text
+            detail.text
           }
         </p>
       </article>

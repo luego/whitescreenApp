@@ -1,4 +1,5 @@
 import type { ScreenColor } from "../data/colors";
+import { colorDetail } from "./color-content";
 
 export const locales = ["en", "de", "es", "pt", "fr", "it", "nl"] as const;
 export type Locale = (typeof locales)[number];
@@ -98,11 +99,12 @@ export function screenHeading(locale: Locale, color: ScreenColor) {
 
 export function pageMeta(locale: Locale, color: ScreenColor) {
   const name = colorName(locale, color);
+  const detail = colorDetail(locale, color);
   const titles: Record<Locale, string> = {
     en: `${color.name} Screen Online — Free Fullscreen Color`, de: `${color.name} Screen Online — ${name}r Vollbildschirm`, es: `Pantalla ${name} online — Color a pantalla completa`, pt: `Tela ${name} online — Cor em tela cheia`, fr: `Écran ${name} en ligne — Couleur en plein écran`, it: `Schermo ${name} online — Colore a schermo intero`, nl: `${color.name} scherm online — Kleur op volledig scherm`,
   };
   const descriptions: Record<Locale, string> = {
-    en:`Free ${name} screen for display testing, lighting, cleaning, and fullscreen backgrounds. No download or sign-up.`,de:`Kostenloser ${name}r Bildschirm zum Testen, Reinigen und als Vollbild-Hintergrund. Ohne Download.`,es:`Pantalla ${name} gratis para probar y limpiar el monitor o usar como fondo a pantalla completa. Sin descargas.`,pt:`Tela ${name} grátis para testar e limpar o monitor ou usar como fundo em tela cheia.`,fr:`Écran ${name} gratuit pour tester et nettoyer votre moniteur ou créer un fond plein écran.`,it:`Schermo ${name} gratuito per testare e pulire il monitor o creare uno sfondo a schermo intero.`,nl:`Gratis ${name} scherm voor schermtests, reiniging en achtergronden op volledig scherm.`,
+    en:`${detail.title}. Free ${name} screen for display testing, cleaning, and fullscreen backgrounds. No download.`,de:`${detail.title}. Kostenloser ${name}r Bildschirm zum Testen, Reinigen und als Vollbild-Hintergrund.`,es:`${detail.title}. Pantalla ${name} gratis para probar y limpiar el monitor o usar como fondo completo.`,pt:`${detail.title}. Tela ${name} grátis para testar e limpar o monitor ou usar como fundo em tela cheia.`,fr:`${detail.title}. Écran ${name} gratuit pour tester et nettoyer le moniteur ou créer un fond plein écran.`,it:`${detail.title}. Schermo ${name} gratuito per testare e pulire il monitor o creare uno sfondo intero.`,nl:`${detail.title}. Gratis ${name} scherm voor schermtests, reiniging en achtergronden op volledig scherm.`,
   };
   return { title: titles[locale], description: descriptions[locale] };
 }
