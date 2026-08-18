@@ -5,6 +5,14 @@ interface Props {
 }
 const { color } = Astro.props;
 const isWhite = color.slug === "";
+const faqs = [
+  { question: `¿Cuándo conviene utilizar una pantalla ${color.adjective}?`, answer: `Puedes utilizarla para revisar la uniformidad del panel, detectar píxeles defectuosos, limpiar la pantalla o disponer de un fondo ${color.adjective} sin distracciones.` },
+  { question: "¿Esta herramienta es gratuita?", answer: "Sí. Puedes utilizarla directamente en el navegador sin crear una cuenta, instalar programas ni realizar pagos." },
+  { question: "¿Sirve para detectar píxeles muertos?", answer: "Sí. Revisa la pantalla a corta distancia y cambia entre blanco, negro, rojo, verde y azul. Un punto que no cambia correctamente puede indicar un píxel muerto o atascado." },
+  { question: "¿Funciona en móviles y tabletas?", answer: "Sí. La interfaz se adapta a pantallas pequeñas y permite abrir el área de color en pantalla completa cuando el navegador y el dispositivo lo permiten." },
+  { question: "¿Puedo elegir un color diferente?", answer: "Sí. Utiliza los colores disponibles o introduce un valor hexadecimal en el selector personalizado para mostrar el tono que necesites." },
+];
+const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) };
 ---
 
 <main x-data={`screenTool('${color.hex}')`} x-init="initTheme()" class="site-shell">
@@ -144,32 +152,57 @@ const isWhite = color.slug === "";
   <section class="seo-copy" aria-labelledby="uses-title">
     <p class="eyebrow">Simple y útil</p>
     <h2 id="uses-title">¿Para qué sirve una pantalla {color.adjective}?</h2>
+    <p class="section-lead">Una pantalla de color sólido permite revisar el estado de un panel y también funciona como una superficie visual limpia. No requiere descargas y se adapta a ordenadores, móviles, tabletas y televisores.</p>
     <div class="use-grid">
       <article>
-        <span>01</span><h3>Revisar el monitor</h3><p>
-          Encuentra píxeles muertos, manchas, polvo y cambios de uniformidad con
-          un fondo sólido.
+        <span>01</span><h3>Revisar y limpiar el monitor</h3><p>
+          Localiza píxeles muertos, polvo, huellas, manchas y diferencias de
+          brillo sobre una superficie uniforme.
         </p>
       </article>
       <article>
         <span>02</span><h3>
-          {isWhite ? "Iluminar tu espacio" : "Probar el color"}
+          {isWhite ? "Iluminar tu espacio" : "Evaluar el color"}
         </h3><p>
           {
             isWhite
-              ? "Usa la pantalla como luz suave para videollamadas, fotos, lectura o dibujo."
-              : "Comprueba contraste, saturación y reproducción del color en cualquier pantalla."
+              ? "Utiliza el brillo de la pantalla como una luz suave para videollamadas, fotografía, lectura o dibujo."
+              : "Comprueba el contraste, la saturación y la reproducción del tono en diferentes dispositivos."
           }
         </p>
       </article>
       <article>
-        <span>03</span><h3>Trabajar sin ruido</h3><p>
-          Convierte una pantalla secundaria en una superficie neutra, limpia y
-          sin distracciones.
+        <span>03</span><h3>Crear un fondo limpio</h3><p>
+          Úsala como fondo temporal para presentaciones, fotografías,
+          grabaciones o una pantalla secundaria sin distracciones.
         </p>
       </article>
     </div>
   </section>
+
+  <section class="content-section how-to" aria-labelledby="how-to-title">
+    <div><p class="eyebrow">Cómo utilizarla</p><h2 id="how-to-title">Lista en tres pasos</h2></div>
+    <ol>
+      <li><span>1</span><div><h3>Elige el color</h3><p>Selecciona una pantalla predefinida o introduce un color hexadecimal personalizado.</p></div></li>
+      <li><span>2</span><div><h3>Ajusta tu dispositivo</h3><p>Sube o baja el brillo físico de la pantalla según la prueba o el uso que necesites.</p></div></li>
+      <li><span>3</span><div><h3>Abre la pantalla completa</h3><p>Pulsa el canvas o la tecla F para ocultar la interfaz y mostrar únicamente el color.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="content-section faq-section" aria-labelledby="faq-title">
+    <p class="eyebrow">Preguntas frecuentes</p>
+    <h2 id="faq-title">Todo sobre la pantalla {color.adjective}</h2>
+    <div class="faq-list">
+      {faqs.map((faq, index) => <details open={index === 0}><summary>{faq.question}<span aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}
+    </div>
+  </section>
+
+  <nav class="content-section related-colors" aria-labelledby="related-title">
+    <div><p class="eyebrow">Más herramientas</p><h2 id="related-title">Prueba otros colores</h2></div>
+    <div>{colors.filter((item) => item.slug !== color.slug).map((item) => <a href={colorPath(item)}><i style={`--related-color:${item.hex}`}></i>Pantalla {item.adjective}</a>)}</div>
+  </nav>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <footer>
     <a href="/">White Screen</a><span
       >Hecho para verse bien en cualquier pantalla.</span

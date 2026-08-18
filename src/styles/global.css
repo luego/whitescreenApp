@@ -96,3 +96,28 @@ body{background:var(--color-base-200)}
 .theme-button.active{color:var(--color-primary-content);background:var(--color-primary)}
 .theme-button:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
 @media(max-width:800px){.header-actions{gap:0}.theme-switcher{background:var(--color-base-200)}}
+
+.content-section{padding:96px 0;border-top:1px solid var(--color-base-300)}
+.content-section h2{max-width:760px;margin:0;font-size:clamp(34px,5vw,58px);line-height:1.04;letter-spacing:-.05em;font-weight:650}
+.how-to p,.faq-list p{margin:0;color:color-mix(in oklab,var(--color-base-content),transparent 38%);font-size:14px;line-height:1.7}
+.how-to{display:grid;grid-template-columns:.72fr 1.28fr;gap:72px}
+.how-to ol{margin:0;padding:0;list-style:none;border-top:1px solid var(--color-base-300)}
+.how-to li{display:grid;grid-template-columns:42px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid var(--color-base-300)}
+.how-to li>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:var(--color-primary-content);background:var(--color-primary);font-size:12px;font-weight:700}
+.how-to h3{margin:4px 0 8px;font-size:17px}
+.faq-section h2{margin-bottom:48px}
+.faq-list{border-top:1px solid var(--color-base-300)}
+.faq-list details{border-bottom:1px solid var(--color-base-300)}
+.faq-list summary{display:flex;justify-content:space-between;gap:24px;padding:24px 0;font-size:17px;font-weight:650;cursor:pointer;list-style:none}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary span{color:var(--color-primary);font-size:24px;font-weight:400;transition:transform .18s ease}
+.faq-list details[open] summary span{transform:rotate(45deg)}
+.faq-list details p{max-width:760px;padding:0 44px 24px 0}
+.related-colors{display:grid;grid-template-columns:.72fr 1.28fr;gap:72px}
+.related-colors>div:last-child{display:flex;flex-wrap:wrap;align-content:start;gap:8px}
+.related-colors a{display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid var(--color-base-300);border-radius:999px;background:var(--color-base-100);font-size:13px;text-decoration:none;transition:border-color .16s ease,transform .16s ease}
+.related-colors a:hover{border-color:var(--color-primary);transform:translateY(-2px)}
+.related-colors i{width:12px;height:12px;border-radius:50%;background:var(--related-color);box-shadow:0 0 0 1px var(--color-base-300)}
+@media(max-width:800px){.content-section{padding:70px 20px}.how-to,.related-colors{grid-template-columns:1fr;gap:38px}.seo-copy+.content-section{border-top:1px solid var(--color-base-300)}}
+@media(max-width:520px){.content-section{padding:60px 20px}.faq-list summary{font-size:15px}.related-colors{padding-left:20px;padding-right:20px}}
+.section-lead{max-width:720px;margin:26px 0 0;color:color-mix(in oklab,var(--color-base-content),transparent 38%);font-size:16px;line-height:1.75}
