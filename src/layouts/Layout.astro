@@ -1,17 +1,23 @@
 ---
 import "../styles/global.css";
-interface Props { title: string; description: string }
-const { title, description } = Astro.props;
+import type { ScreenColor } from "../data/colors";
+import { locales, localizedPath, type Locale } from "../i18n/translations";
+interface Props { title: string; description: string; locale: Locale; color: ScreenColor }
+const { title, description, locale, color } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
-const structuredData = { "@context": "https://schema.org", "@type": "WebApplication", name: "White Screen", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
+const structuredData = { "@context": "https://schema.org", "@type": "WebApplication", name: "White Screen", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", inLanguage: locale, description, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
+const ogLocales: Record<Locale, string> = { en:"en_US", de:"de_DE", es:"es_ES", pt:"pt_PT", fr:"fr_FR", it:"it_IT", nl:"nl_NL" };
 ---
 <!doctype html>
-<html lang="es" data-theme="bumblebee">
+<html lang={locale} data-theme="bumblebee">
   <head>
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><meta name="theme-color" content="#facc15" />
     <meta name="description" content={description} /><meta name="robots" content="index, follow" />
-    <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:locale" content="es_ES" /><meta name="twitter:card" content="summary" />
-    {canonical && <link rel="canonical" href={canonical} />}<link rel="icon" href="/favicon.svg" /><meta name="generator" content={Astro.generator} /><title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:locale" content={ogLocales[locale]} /><meta name="twitter:card" content="summary" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {locales.map((item) => <link rel="alternate" hreflang={item} href={Astro.site ? new URL(localizedPath(item, color), Astro.site) : localizedPath(item, color)} />)}
+    <link rel="alternate" hreflang="x-default" href={Astro.site ? new URL(localizedPath("en", color), Astro.site) : localizedPath("en", color)} />
+    <link rel="icon" href="/favicon.svg" /><meta name="generator" content={Astro.generator} /><title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <script is:inline>
       (() => {
         const saved = localStorage.getItem("theme-mode") || "system";

@@ -1,45 +1,44 @@
 ---
-import { colors, colorPath, type ScreenColor } from "../data/colors";
+import { colors, type ScreenColor } from "../data/colors";
+import { colorName, copy, localeNames, locales, localizedPath, screenHeading, type Locale } from "../i18n/translations";
 interface Props {
   color: ScreenColor;
+  locale: Locale;
 }
-const { color } = Astro.props;
+const { color, locale } = Astro.props;
 const isWhite = color.slug === "";
-const faqs = [
-  { question: `¿Cuándo conviene utilizar una pantalla ${color.adjective}?`, answer: `Puedes utilizarla para revisar la uniformidad del panel, detectar píxeles defectuosos, limpiar la pantalla o disponer de un fondo ${color.adjective} sin distracciones.` },
-  { question: "¿Esta herramienta es gratuita?", answer: "Sí. Puedes utilizarla directamente en el navegador sin crear una cuenta, instalar programas ni realizar pagos." },
-  { question: "¿Sirve para detectar píxeles muertos?", answer: "Sí. Revisa la pantalla a corta distancia y cambia entre blanco, negro, rojo, verde y azul. Un punto que no cambia correctamente puede indicar un píxel muerto o atascado." },
-  { question: "¿Funciona en móviles y tabletas?", answer: "Sí. La interfaz se adapta a pantallas pequeñas y permite abrir el área de color en pantalla completa cuando el navegador y el dispositivo lo permiten." },
-  { question: "¿Puedo elegir un color diferente?", answer: "Sí. Utiliza los colores disponibles o introduce un valor hexadecimal en el selector personalizado para mostrar el tono que necesites." },
-];
+const t = copy[locale];
+const currentColor = colorName(locale, color);
+const faqs = t.faq.map(({ q, a }) => ({ question: q, answer: a }));
 const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) };
 ---
 
 <main x-data={`screenTool('${color.hex}')`} x-init="initTheme()" class="site-shell">
   <header class="topbar">
-    <a href="/" class="brand" aria-label="White Screen — inicio"
+    <a href={localizedPath(locale)} class="brand" aria-label="White Screen"
       ><span class="brand-mark" aria-hidden="true"></span><span
         >White Screen</span
       ></a
     >
     <div class="header-actions">
-      <span class="top-note">Herramienta gratuita · Sin registro</span>
+      <span class="top-note">{t.free}</span>
+      <details class="language-menu">
+        <summary aria-label={t.language} title={t.language}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg><span>{locale.toUpperCase()}</span></summary>
+        <div>{locales.map((item) => <a href={localizedPath(item, color)} lang={item} aria-current={item === locale ? "page" : undefined}>{localeNames[item]}</a>)}</div>
+      </details>
       <div class="theme-switcher" role="group" aria-label="Tema de la interfaz">
-        <button @click="setTheme('light')" :class="themeMode === 'light' && 'active'" :aria-pressed="themeMode === 'light'" class="theme-button" type="button" aria-label="Tema claro" title="Tema claro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg></button>
-        <button @click="setTheme('dark')" :class="themeMode === 'dark' && 'active'" :aria-pressed="themeMode === 'dark'" class="theme-button" type="button" aria-label="Tema oscuro" title="Tema oscuro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg></button>
-        <button @click="setTheme('system')" :class="themeMode === 'system' && 'active'" :aria-pressed="themeMode === 'system'" class="theme-button" type="button" aria-label="Usar tema del sistema" title="Tema del sistema"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg></button>
+        <button @click="setTheme('light')" :class="themeMode === 'light' && 'active'" :aria-pressed="themeMode === 'light'" class="theme-button" type="button" aria-label={t.light} title={t.light}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg></button>
+        <button @click="setTheme('dark')" :class="themeMode === 'dark' && 'active'" :aria-pressed="themeMode === 'dark'" class="theme-button" type="button" aria-label={t.dark} title={t.dark}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg></button>
+        <button @click="setTheme('system')" :class="themeMode === 'system' && 'active'" :aria-pressed="themeMode === 'system'" class="theme-button" type="button" aria-label={t.system} title={t.system}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg></button>
       </div>
     </div>
   </header>
 
   <section class="screen-hero" aria-labelledby="page-title">
     <div class="screen-hero-copy">
-      <p class="eyebrow">Pantalla de color online</p>
-      <h1 id="page-title">Pantalla {color.adjective}</h1>
-      <p>
-        Una superficie limpia para iluminar, revisar tu monitor o trabajar sin
-        distracciones.
-      </p>
+      <p class="eyebrow">{t.tool}</p>
+      <h1 id="page-title">{screenHeading(locale, color)}</h1>
+      <p>{t.hero}</p>
     </div>
     <button
       x-ref="canvas"
@@ -49,11 +48,11 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
       style={`--screen-color:${color.hex}; --screen-text:${color.text}`}
       :style="`--screen-color: ${validColor}; --screen-text: ${previewText}`"
       type="button"
-      aria-label={`Abrir pantalla ${color.adjective} en pantalla completa`}
+      aria-label={`${t.fullscreen}: ${currentColor}`}
     >
-      <span class="preview-label">Haz clic o pulsa F</span>
+      <span class="preview-label">{t.click}</span>
       <span class="preview-action"
-        >Pantalla completa <span aria-hidden="true">↗</span></span
+        >{t.fullscreen} <span aria-hidden="true">↗</span></span
       >
     </button>
   </section>
@@ -61,13 +60,13 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
   <section class="tool-card" aria-label="Controles de pantalla">
     <div class="control-group resolution-group">
       <div class="control-heading">
-        <span>Resolución</span><output x-text="`${width} × ${height}`"
+        <span>{t.resolution}</span><output x-text="`${width} × ${height}`"
           >1920 × 1080</output
         >
       </div>
       <div class="size-inputs">
         <label
-          ><span>Ancho</span><input
+          ><span>{t.width}</span><input
             type="number"
             min="1"
             max="7680"
@@ -75,7 +74,7 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
           /></label
         ><span aria-hidden="true">×</span>
         <label
-          ><span>Alto</span><input
+          ><span>{t.height}</span><input
             type="number"
             min="1"
             max="4320"
@@ -109,18 +108,18 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
     </div>
     <div class="control-group color-group">
       <div class="control-heading">
-        <span>Colores</span><span>{colors.length} opciones</span>
+        <span>{t.colorsLabel}</span><span>{colors.length} {t.options}</span>
       </div>
       <nav class="palette" aria-label="Elegir color de pantalla">
         {
           colors.map((item) => (
             <a
-              href={colorPath(item)}
+            href={localizedPath(locale, item)}
               class:list={["swatch", { selected: item.slug === color.slug }]}
               style={`--swatch:${item.hex}`}
-              aria-label={`Pantalla ${item.label.toLowerCase()}`}
+            aria-label={`${item.name} Screen`}
               aria-current={item.slug === color.slug ? "page" : undefined}
-              title={item.label}
+            title={colorName(locale, item)}
             >
               <span>{item.label}</span>
             </a>
@@ -128,7 +127,7 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
         }
       </nav>
       <div class="custom-color">
-        <span>Color personalizado</span>
+        <span>{t.custom}</span>
         <label class="color-picker" title="Abrir selector de color"
           ><span class="sr-only">Elegir color personalizado</span><input
             type="color"
@@ -150,63 +149,54 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
   </section>
 
   <section class="seo-copy" aria-labelledby="uses-title">
-    <p class="eyebrow">Simple y útil</p>
-    <h2 id="uses-title">¿Para qué sirve una pantalla {color.adjective}?</h2>
-    <p class="section-lead">Una pantalla de color sólido permite revisar el estado de un panel y también funciona como una superficie visual limpia. No requiere descargas y se adapta a ordenadores, móviles, tabletas y televisores.</p>
+    <p class="eyebrow">{t.simple}</p>
+    <h2 id="uses-title">{t.purpose(currentColor)}</h2>
+    <p class="section-lead">{t.lead}</p>
     <div class="use-grid">
       <article>
-        <span>01</span><h3>Revisar y limpiar el monitor</h3><p>
-          Localiza píxeles muertos, polvo, huellas, manchas y diferencias de
-          brillo sobre una superficie uniforme.
-        </p>
+        <span>01</span><h3>{t.cards[0].title}</h3><p>{t.cards[0].text}</p>
       </article>
       <article>
         <span>02</span><h3>
-          {isWhite ? "Iluminar tu espacio" : "Evaluar el color"}
+          {isWhite ? t.whiteCard.title : t.colorCard.title}
         </h3><p>
           {
-            isWhite
-              ? "Utiliza el brillo de la pantalla como una luz suave para videollamadas, fotografía, lectura o dibujo."
-              : "Comprueba el contraste, la saturación y la reproducción del tono en diferentes dispositivos."
+            isWhite ? t.whiteCard.text : t.colorCard.text
           }
         </p>
       </article>
       <article>
-        <span>03</span><h3>Crear un fondo limpio</h3><p>
-          Úsala como fondo temporal para presentaciones, fotografías,
-          grabaciones o una pantalla secundaria sin distracciones.
-        </p>
+        <span>03</span><h3>{t.cards[1].title}</h3><p>{t.cards[1].text}</p>
       </article>
     </div>
   </section>
 
   <section class="content-section how-to" aria-labelledby="how-to-title">
-    <div><p class="eyebrow">Cómo utilizarla</p><h2 id="how-to-title">Lista en tres pasos</h2></div>
+    <div><p class="eyebrow">{t.howLabel}</p><h2 id="how-to-title">{t.howTitle}</h2></div>
     <ol>
-      <li><span>1</span><div><h3>Elige el color</h3><p>Selecciona una pantalla predefinida o introduce un color hexadecimal personalizado.</p></div></li>
-      <li><span>2</span><div><h3>Ajusta tu dispositivo</h3><p>Sube o baja el brillo físico de la pantalla según la prueba o el uso que necesites.</p></div></li>
-      <li><span>3</span><div><h3>Abre la pantalla completa</h3><p>Pulsa el canvas o la tecla F para ocultar la interfaz y mostrar únicamente el color.</p></div></li>
+      {t.steps.map((step, index) => <li><span>{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}
     </ol>
   </section>
 
   <section class="content-section faq-section" aria-labelledby="faq-title">
-    <p class="eyebrow">Preguntas frecuentes</p>
-    <h2 id="faq-title">Todo sobre la pantalla {color.adjective}</h2>
+    <p class="eyebrow">{t.faqLabel}</p>
+    <h2 id="faq-title">{t.faqTitle(currentColor)}</h2>
     <div class="faq-list">
       {faqs.map((faq, index) => <details open={index === 0}><summary>{faq.question}<span aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}
     </div>
   </section>
 
   <nav class="content-section related-colors" aria-labelledby="related-title">
-    <div><p class="eyebrow">Más herramientas</p><h2 id="related-title">Prueba otros colores</h2></div>
-    <div>{colors.filter((item) => item.slug !== color.slug).map((item) => <a href={colorPath(item)}><i style={`--related-color:${item.hex}`}></i>Pantalla {item.adjective}</a>)}</div>
+    <div><p class="eyebrow">{t.more}</p><h2 id="related-title">{t.other}</h2></div>
+    <div>{colors.filter((item) => item.slug !== color.slug).map((item) => <a href={localizedPath(locale, item)}><i style={`--related-color:${item.hex}`}></i>{screenHeading(locale, item)}</a>)}</div>
   </nav>
 
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <footer>
-    <a href="/">White Screen</a><span
-      >Hecho para verse bien en cualquier pantalla.</span
-    >
+    <div class="footer-copy"><a href={localizedPath(locale)}>White Screen</a><span>{t.footer}</span></div>
+    <nav class="footer-languages" aria-label={t.language}>
+      {locales.map((item) => <a href={localizedPath(item, color)} lang={item} aria-current={item === locale ? "page" : undefined}>{localeNames[item]}</a>)}
+    </nav>
   </footer>
 </main>
 
