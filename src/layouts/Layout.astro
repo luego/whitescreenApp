@@ -2,10 +2,13 @@
 import "../styles/global.css";
 import type { ScreenColor } from "../data/colors";
 import { locales, localizedPath, type Locale } from "../i18n/translations";
-interface Props { title: string; description: string; locale: Locale; color: ScreenColor }
-const { title, description, locale, color } = Astro.props;
+interface Props { title: string; description: string; locale: Locale; color?: ScreenColor; alternatePaths?: Partial<Record<Locale, string>>; pageType?: "app" | "page" }
+const { title, description, locale, color, alternatePaths, pageType = "app" } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
-const structuredData = { "@context": "https://schema.org", "@type": "WebApplication", name: "White Screen", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", inLanguage: locale, description, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
+const alternateHref = (item: Locale) => alternatePaths?.[item] ?? (color ? localizedPath(item, color) : localizedPath(item));
+const structuredData = pageType === "app"
+  ? { "@context": "https://schema.org", "@type": "WebApplication", name: "White Screen", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", inLanguage: locale, description, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } }
+  : { "@context": "https://schema.org", "@type": "WebPage", name: title, inLanguage: locale, description };
 const ogLocales: Record<Locale, string> = { en:"en_US", de:"de_DE", es:"es_ES", pt:"pt_PT", fr:"fr_FR", it:"it_IT", nl:"nl_NL" };
 ---
 <!doctype html>
@@ -15,9 +18,9 @@ const ogLocales: Record<Locale, string> = { en:"en_US", de:"de_DE", es:"es_ES", 
     <meta name="description" content={description} /><meta name="robots" content="index, follow" />
     <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:locale" content={ogLocales[locale]} /><meta name="twitter:card" content="summary" />
     {canonical && <link rel="canonical" href={canonical} />}
-    {locales.map((item) => <link rel="alternate" hreflang={item} href={Astro.site ? new URL(localizedPath(item, color), Astro.site) : localizedPath(item, color)} />)}
-    <link rel="alternate" hreflang="x-default" href={Astro.site ? new URL(localizedPath("en", color), Astro.site) : localizedPath("en", color)} />
-    <link rel="icon" href="/favicon.svg" /><meta name="generator" content={Astro.generator} /><title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    {locales.map((item) => <link rel="alternate" hreflang={item} href={Astro.site ? new URL(alternateHref(item), Astro.site) : alternateHref(item)} />)}
+    <link rel="alternate" hreflang="x-default" href={Astro.site ? new URL(alternateHref("en"), Astro.site) : alternateHref("en")} />
+    <link rel="icon" href="/favicon.svg" /><link rel="manifest" href="/manifest.webmanifest" /><meta name="application-name" content="White Screen" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><link rel="apple-touch-icon" href="/icons/app-icon.svg" /><meta name="generator" content={Astro.generator} /><title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <script is:inline>
       (() => {
         const saved = localStorage.getItem("theme-mode") || "system";
@@ -26,5 +29,5 @@ const ogLocales: Record<Locale, string> = { en:"en_US", de:"de_DE", es:"es_ES", 
       })();
     </script>
   </head>
-  <body><slot /></body>
+  <body><slot /><script is:inline>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));}</script></body>
 </html>

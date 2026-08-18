@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { copy, localeNames, locales, localizedPath, type Locale } from "../i18n/translations";
+import { legalCopy, legalPath } from "../i18n/legal";
+import { editorialCopy, editorialPath, guideSlugs, type GuideSlug } from "../i18n/editorial";
+interface Props { locale:Locale; page:"about"|GuideSlug }
+const { locale, page } = Astro.props;
+const e = editorialCopy[locale]; const t = copy[locale]; const legal = legalCopy[locale];
+const article = page === "about" ? e.about : e.guides[page];
+const alternatePaths = Object.fromEntries(locales.map((item) => [item, editorialPath(item, page)]));
+---
+<Layout title={`${article.title} | White Screen`} description={article.description} locale={locale} alternatePaths={alternatePaths} pageType="page">
+<main class="site-shell info-page">
+  <header class="topbar"><a href={localizedPath(locale)} class="brand"><span class="brand-mark"></span><span>White Screen</span></a><div class="header-actions"><a class="header-text-link" href={editorialPath(locale,"about")}>{e.labels.about}</a><details class="language-menu"><summary aria-label={t.language}><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg><span>{locale.toUpperCase()}</span></summary><div>{locales.map(item=><a href={editorialPath(item,page)} lang={item} aria-current={item===locale?"page":undefined}>{localeNames[item]}</a>)}</div></details></div></header>
+  <article class="legal-page editorial-page"><a class="back-link" href={localizedPath(locale)}>← {legal.nav.back}</a><header class="legal-hero"><p class="eyebrow">{article.eyebrow}</p><h1>{article.title}</h1><p>{article.intro}</p></header><div class="legal-sections">{article.sections.map(section=><section><h2>{section.title}</h2><p>{section.body}</p></section>)}</div></article>
+  <aside class="guide-hub"><p class="eyebrow">{e.labels.guides}</p><h2>{e.labels.allGuides}</h2><div>{guideSlugs.map(slug=><a href={editorialPath(locale,slug)} aria-current={page===slug?"page":undefined}><span>{e.guides[slug].title}</span><small>{e.labels.read} →</small></a>)}</div></aside>
+  <footer><div class="footer-copy"><a href={localizedPath(locale)}>White Screen</a><span>{t.footer}</span></div><div class="footer-navs"><nav class="footer-legal"><a href={editorialPath(locale,"about")}>{e.labels.about}</a><a href={legalPath(locale,"privacy")}>{legal.nav.privacy}</a><a href={legalPath(locale,"terms")}>{legal.nav.terms}</a><a href={legalPath(locale,"feedback")}>{legal.nav.feedback}</a></nav></div></footer>
+</main>
+</Layout>

@@ -1,0 +1,7 @@
+---
+import EditorialPage from "../../components/EditorialPage.astro";
+import {locales,type Locale} from "../../i18n/translations";
+export function getStaticPaths(){return locales.filter(locale=>locale!=="en").map(locale=>({params:{lang:locale},props:{locale}}));}
+const {locale}=Astro.props as {locale:Locale};
+---
+<EditorialPage locale={locale} page="about" />

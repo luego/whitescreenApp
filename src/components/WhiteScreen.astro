@@ -2,6 +2,8 @@
 import { colors, type ScreenColor } from "../data/colors";
 import { colorName, copy, localeNames, locales, localizedPath, screenHeading, type Locale } from "../i18n/translations";
 import { colorDetail } from "../i18n/color-content";
+import { legalCopy, legalPath } from "../i18n/legal";
+import { editorialCopy, editorialPath, guideSlugs } from "../i18n/editorial";
 interface Props {
   color: ScreenColor;
   locale: Locale;
@@ -10,6 +12,8 @@ const { color, locale } = Astro.props;
 const t = copy[locale];
 const currentColor = colorName(locale, color);
 const detail = colorDetail(locale, color);
+const legal = legalCopy[locale];
+const editorial = editorialCopy[locale];
 const faqs = t.faq.map(({ q, a }) => ({ question: q, answer: a }));
 const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) };
 ---
@@ -197,12 +201,15 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
     <div>{colors.filter((item) => item.slug !== color.slug).map((item) => <a href={localizedPath(locale, item)}><i style={`--related-color:${item.hex}`}></i>{screenHeading(locale, item)}</a>)}</div>
   </nav>
 
+  <section class="guide-hub home-guides" aria-labelledby="guides-title"><p class="eyebrow">{editorial.labels.guides}</p><h2 id="guides-title">{editorial.labels.allGuides}</h2><div>{guideSlugs.map((slug)=><a href={editorialPath(locale,slug)}><span>{editorial.guides[slug].title}</span><small>{editorial.labels.read} →</small></a>)}</div></section>
+
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <footer>
     <div class="footer-copy"><a href={localizedPath(locale)}>White Screen</a><span>{t.footer}</span></div>
-    <nav class="footer-languages" aria-label={t.language}>
-      {locales.map((item) => <a href={localizedPath(item, color)} lang={item} aria-current={item === locale ? "page" : undefined}>{localeNames[item]}</a>)}
-    </nav>
+    <div class="footer-navs">
+      <nav class="footer-legal" aria-label="Legal"><a href={editorialPath(locale,"about")}>{editorial.labels.about}</a><a href={legalPath(locale, "privacy")}>{legal.nav.privacy}</a><a href={legalPath(locale, "terms")}>{legal.nav.terms}</a><a href={legalPath(locale, "feedback")}>{legal.nav.feedback}</a></nav>
+      <nav class="footer-languages" aria-label={t.language}>{locales.map((item) => <a href={localizedPath(item, color)} lang={item} aria-current={item === locale ? "page" : undefined}>{localeNames[item]}</a>)}</nav>
+    </div>
   </footer>
 </main>
 

@@ -1,0 +1,7 @@
+---
+import EditorialPage from "../../components/EditorialPage.astro";
+import { guideSlugs, type GuideSlug } from "../../i18n/editorial";
+export function getStaticPaths(){return guideSlugs.map(guide=>({params:{guide},props:{guide}}));}
+const {guide}=Astro.props as {guide:GuideSlug};
+---
+<EditorialPage locale="en" page={guide} />

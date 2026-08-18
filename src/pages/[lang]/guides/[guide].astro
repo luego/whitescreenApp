@@ -1,0 +1,8 @@
+---
+import EditorialPage from "../../../components/EditorialPage.astro";
+import {locales,type Locale} from "../../../i18n/translations";
+import {guideSlugs,type GuideSlug} from "../../../i18n/editorial";
+export function getStaticPaths(){return locales.filter(locale=>locale!=="en").flatMap(locale=>guideSlugs.map(guide=>({params:{lang:locale,guide},props:{locale,guide}})));}
+const {locale,guide}=Astro.props as {locale:Locale;guide:GuideSlug};
+---
+<EditorialPage locale={locale} page={guide} />

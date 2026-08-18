@@ -1,0 +1,21 @@
+{
+  "name": "White Screen — Color Screen Tool",
+  "short_name": "White Screen",
+  "description": "Solid color screens for display testing, soft lighting and clean backgrounds.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f1eb",
+  "theme_color": "#facc15",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {"src":"/icons/app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},
+    {"src":"/icons/app-icon-maskable.svg","sizes":"any","type":"image/svg+xml","purpose":"maskable"}
+  ],
+  "shortcuts": [
+    {"name":"White screen","url":"/","icons":[{"src":"/icons/app-icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Black screen","url":"/black-screen/","icons":[{"src":"/icons/app-icon.svg","sizes":"any","type":"image/svg+xml"}]}
+  ]
+}
