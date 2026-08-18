@@ -12,6 +12,13 @@ const structuredData = { "@context": "https://schema.org", "@type": "WebApplicat
     <meta name="description" content={description} /><meta name="robots" content="index, follow" />
     <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:locale" content="es_ES" /><meta name="twitter:card" content="summary" />
     {canonical && <link rel="canonical" href={canonical} />}<link rel="icon" href="/favicon.svg" /><meta name="generator" content={Astro.generator} /><title>{title}</title><script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem("theme-mode") || "system";
+        const dark = saved === "dark" || (saved === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "night" : "bumblebee";
+      })();
+    </script>
   </head>
   <body><slot /></body>
 </html>

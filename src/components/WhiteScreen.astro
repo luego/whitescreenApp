@@ -7,14 +7,21 @@ const { color } = Astro.props;
 const isWhite = color.slug === "";
 ---
 
-<main x-data={`screenTool('${color.hex}')`} class="site-shell">
+<main x-data={`screenTool('${color.hex}')`} x-init="initTheme()" class="site-shell">
   <header class="topbar">
     <a href="/" class="brand" aria-label="White Screen — inicio"
       ><span class="brand-mark" aria-hidden="true"></span><span
         >White Screen</span
       ></a
     >
-    <span class="top-note">Herramienta gratuita · Sin registro</span>
+    <div class="header-actions">
+      <span class="top-note">Herramienta gratuita · Sin registro</span>
+      <div class="theme-switcher" role="group" aria-label="Tema de la interfaz">
+        <button @click="setTheme('light')" :class="themeMode === 'light' && 'active'" :aria-pressed="themeMode === 'light'" class="theme-button" type="button" aria-label="Tema claro" title="Tema claro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg></button>
+        <button @click="setTheme('dark')" :class="themeMode === 'dark' && 'active'" :aria-pressed="themeMode === 'dark'" class="theme-button" type="button" aria-label="Tema oscuro" title="Tema oscuro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg></button>
+        <button @click="setTheme('system')" :class="themeMode === 'system' && 'active'" :aria-pressed="themeMode === 'system'" class="theme-button" type="button" aria-label="Usar tema del sistema" title="Tema del sistema"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg></button>
+      </div>
+    </div>
   </header>
 
   <section class="screen-hero" aria-labelledby="page-title">
@@ -176,6 +183,23 @@ const isWhite = color.slug === "";
       width: 1920,
       height: 1080,
       customColor: initialColor,
+      themeMode: "system",
+      initTheme() {
+        const saved = localStorage.getItem("theme-mode");
+        this.themeMode = ["light", "dark", "system"].includes(saved || "") ? saved : "system";
+        this.applyTheme();
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (this.themeMode === "system") this.applyTheme(); });
+      },
+      setTheme(mode: string) {
+        this.themeMode = mode;
+        localStorage.setItem("theme-mode", mode);
+        this.applyTheme();
+      },
+      applyTheme() {
+        const dark = this.themeMode === "dark" || (this.themeMode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "night" : "bumblebee";
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0f172a" : "#facc15");
+      },
       get validColor() {
         return /^#[0-9a-f]{6}$/i.test(this.customColor)
           ? this.customColor
