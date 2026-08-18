@@ -29,6 +29,12 @@ export default (Alpine: Alpine) => {
     },
   });
 
+  // ClientRouter replaces <html> attributes during navigation. Reapply the
+  // persisted mode before the next frame to prevent a light-theme flash.
+  document.addEventListener("astro:after-swap", () => {
+    (Alpine.store("theme") as { apply: () => void }).apply();
+  });
+
   Alpine.data("screenTool", (initialColor: string) => ({
     width: 1920,
     height: 1080,
