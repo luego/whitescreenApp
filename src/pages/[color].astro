@@ -1,0 +1,17 @@
+---
+import WhiteScreen from "../components/WhiteScreen.astro";
+import Layout from "../layouts/Layout.astro";
+import { colors } from "../data/colors";
+
+export function getStaticPaths() {
+  return colors.slice(1).map((color) => ({ params: { color: color.slug }, props: { color } }));
+}
+
+const { color } = Astro.props;
+const title = `${color.name} Screen Online — Pantalla ${color.adjective} completa`;
+const description = `Pantalla ${color.adjective} online gratis para probar tu monitor, detectar píxeles y usar como fondo o fuente de luz. Ábrela a pantalla completa.`;
+---
+
+<Layout title={title} description={description}>
+  <WhiteScreen color={color} />
+</Layout>
