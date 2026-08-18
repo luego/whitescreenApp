@@ -43,9 +43,47 @@ body{background:var(--color-base-200)}
 .color-picker input[type=color]{background:var(--color-base-200);border-color:var(--color-base-300)}
 .custom-color .hex-field input[type=text]{border-color:var(--color-base-300)}
 
+/* Mobile app shell: header, canvas, then controls. */
+@media(max-width:800px){
+  html,body{min-height:100%;background:var(--color-base-200)}
+  body{min-height:100dvh}
+  .site-shell{width:100%;min-height:100dvh;margin:0;padding-bottom:env(safe-area-inset-bottom)}
+  .topbar{position:sticky;top:0;z-index:20;height:calc(62px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 18px 0;background:color-mix(in oklab,var(--color-base-100),transparent 6%);border-bottom-color:var(--color-base-300);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .top-note{display:none}
+  .screen-hero{display:block;padding:12px 12px 0}
+  .screen-hero-copy{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .screen-preview{display:block;width:100%;aspect-ratio:16/10;border-radius:20px;box-shadow:0 18px 45px color-mix(in oklab,var(--color-base-content),transparent 88%)}
+  .preview-label{top:18px;left:20px}
+  .preview-action{right:18px;bottom:18px}
+  .tool-card{width:calc(100% - 24px);margin:16px 12px 56px;padding:22px 20px;gap:30px;border-radius:20px;box-shadow:0 18px 45px color-mix(in oklab,var(--color-base-content),transparent 91%)}
+  .seo-copy{padding:28px 20px 76px}
+  footer{margin:0 20px;padding-bottom:env(safe-area-inset-bottom)}
+}
+
+@media(max-width:420px){
+  .topbar{padding-left:14px;padding-right:14px}
+  .screen-hero{padding-left:8px;padding-right:8px}
+  .screen-preview{border-radius:17px}
+  .tool-card{width:calc(100% - 16px);margin-left:8px;margin-right:8px;padding:20px 16px;border-radius:17px}
+  .presets{gap:5px}
+  .presets button{padding:9px 3px;font-size:13px}
+  .palette{gap:9px}
+}
+
 /* Namespaced to avoid collisions with DaisyUI's .hero component. */
 .screen-hero{padding:72px 0 34px;display:grid;grid-template-columns:.72fr 1.28fr;gap:72px;align-items:end}
 .screen-hero-copy{align-self:start;padding-top:20px}
 .screen-hero-copy>p:last-child{max-width:400px;margin:28px 0 0;color:color-mix(in oklab,var(--color-base-content),transparent 42%);font-size:16px;line-height:1.65}
 @media(max-width:800px){.screen-hero{grid-template-columns:1fr;gap:38px;padding-top:50px}.screen-hero-copy{padding:0}}
 @media(max-width:520px){.screen-hero{padding-top:38px}}
+
+/* Final mobile spacing override: keep app cards away from screen edges. */
+@media(max-width:800px){
+  .screen-hero{padding:16px 16px 0}
+  .tool-card{width:calc(100% - 32px);margin:18px 16px 56px}
+}
+
+@media(max-width:420px){
+  .screen-hero{padding:14px 14px 0}
+  .tool-card{width:calc(100% - 28px);margin-left:14px;margin-right:14px}
+}
