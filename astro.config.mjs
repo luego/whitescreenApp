@@ -5,9 +5,12 @@ import alpinejs from '@astrojs/alpinejs';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
-  integrations: [alpinejs({ entrypoint: '/src/alpine' })],
+  site: 'https://whitescreenapp.online',
+  integrations: [alpinejs({ entrypoint: '/src/alpine' }), sitemap()],
 
   vite: {
     plugins: [tailwindcss()]
