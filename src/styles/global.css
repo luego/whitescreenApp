@@ -196,6 +196,16 @@ footer{gap:30px;padding:24px 0}
 .home-guides{border-top:1px solid var(--color-base-300)}
 @media(max-width:800px){.guide-hub{padding:60px 20px}.guide-hub>div{grid-template-columns:1fr}.guide-hub>div>a{min-height:120px}.header-text-link{display:none}}
 
+/* Native fullscreen with an iOS/mobile fallback. */
+[x-cloak]{display:none!important}
+html.has-pseudo-fullscreen,html.has-pseudo-fullscreen body{overflow:hidden;overscroll-behavior:none}
+.screen-preview.pseudo-fullscreen{position:fixed;inset:0;z-index:9999;width:100vw;width:100dvw;height:100vh;height:100dvh;max-width:none;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none;transform:none;touch-action:manipulation}
+.screen-preview.pseudo-fullscreen:hover{transform:none;box-shadow:none}
+.screen-preview.pseudo-fullscreen .preview-label,.screen-preview.pseudo-fullscreen .preview-action{display:none}
+.fullscreen-exit{position:absolute;z-index:2;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));display:grid;place-items:center;width:42px;height:42px;border-radius:50%;color:var(--screen-text);background:color-mix(in srgb,var(--screen-text) 12%,transparent);font-size:27px;font-weight:300;line-height:1}
+.screen-preview:not(.pseudo-fullscreen):not(:fullscreen) .fullscreen-exit{display:none!important}
+@supports selector(:-webkit-full-screen){.screen-preview:-webkit-full-screen{width:100vw;height:100vh;border:0;border-radius:0}.screen-preview:-webkit-full-screen .preview-label,.screen-preview:-webkit-full-screen .preview-action{display:none}}
+
 /* Unified White Screen brand mark */
 .brand-mark{position:relative;width:20px;height:20px;border-radius:6px;background:var(--color-primary);border:1px solid color-mix(in oklab,var(--color-primary),black 18%);box-shadow:none}
 .brand-mark:after{content:"";position:absolute;inset:4px;border:1.5px solid #171714;border-radius:3px;background:#fff}
