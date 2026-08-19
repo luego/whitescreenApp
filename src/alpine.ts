@@ -39,6 +39,24 @@ export default (Alpine: Alpine) => {
     width: 1920,
     height: 1080,
     customColor: initialColor,
+    isFullscreen: false,
+    isPseudoFullscreen: false,
+    fullscreenListener: null as (() => void) | null,
+    init() {
+      this.fullscreenListener = () => {
+        const webkitDocument = document as Document & { webkitFullscreenElement?: Element | null };
+        this.isFullscreen = Boolean(document.fullscreenElement || webkitDocument.webkitFullscreenElement || this.isPseudoFullscreen);
+      };
+      document.addEventListener("fullscreenchange", this.fullscreenListener);
+      document.addEventListener("webkitfullscreenchange", this.fullscreenListener);
+    },
+    destroy() {
+      if (this.fullscreenListener) {
+        document.removeEventListener("fullscreenchange", this.fullscreenListener);
+        document.removeEventListener("webkitfullscreenchange", this.fullscreenListener);
+      }
+      this.closePseudoFullscreen();
+    },
     get validColor() { return /^#[0-9a-f]{6}$/i.test(this.customColor) ? this.customColor : initialColor; },
     get previewText() {
       const value = this.validColor.slice(1);
@@ -48,7 +66,49 @@ export default (Alpine: Alpine) => {
       return (red * 299 + green * 587 + blue * 114) / 1000 > 145 ? "#141414" : "#ffffff";
     },
     setSize(width: number, height: number) { this.width = width; this.height = height; },
-    openFullscreen() { (this.$refs.canvas as HTMLElement).requestFullscreen?.(); },
+    async toggleFullscreen() {
+      const webkitDocument = document as Document & {
+        webkitExitFullscreen?: () => Promise<void> | void;
+        webkitFullscreenElement?: Element | null;
+      };
+
+      if (document.fullscreenElement || webkitDocument.webkitFullscreenElement) {
+        const exit = document.exitFullscreen?.bind(document) ?? webkitDocument.webkitExitFullscreen?.bind(document);
+        await Promise.resolve(exit?.()).catch(() => undefined);
+        return;
+      }
+
+      if (this.isPseudoFullscreen) {
+        this.closePseudoFullscreen();
+        return;
+      }
+
+      const canvas = this.$refs.canvas as HTMLElement & {
+        webkitRequestFullscreen?: () => Promise<void> | void;
+      };
+      const request = canvas.requestFullscreen?.bind(canvas) ?? canvas.webkitRequestFullscreen?.bind(canvas);
+
+      if (request) {
+        try {
+          await Promise.resolve(request());
+          if (document.fullscreenElement || webkitDocument.webkitFullscreenElement) return;
+        } catch {
+          // iPhone Safari and some embedded/mobile browsers reject this API.
+        }
+      }
+
+      this.openPseudoFullscreen();
+    },
+    openPseudoFullscreen() {
+      this.isPseudoFullscreen = true;
+      this.isFullscreen = true;
+      document.documentElement.classList.add("has-pseudo-fullscreen");
+    },
+    closePseudoFullscreen() {
+      this.isPseudoFullscreen = false;
+      this.isFullscreen = Boolean(document.fullscreenElement);
+      document.documentElement.classList.remove("has-pseudo-fullscreen");
+    },
     downloadImage() {
       const canvas = document.createElement("canvas");
       canvas.width = Math.max(1, Math.min(7680, Number(this.width) || 1920));

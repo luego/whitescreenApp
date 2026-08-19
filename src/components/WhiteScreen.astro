@@ -29,9 +29,10 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
     </div>
     <button
       x-ref="canvas"
-      @click="openFullscreen()"
-      @keydown.f.window.prevent="openFullscreen()"
+      @click="toggleFullscreen()"
+      @keydown.f.window.prevent="toggleFullscreen()"
       class="screen-preview"
+      :class="{ 'pseudo-fullscreen': isPseudoFullscreen }"
       style={`--screen-color:${color.hex}; --screen-text:${color.text}`}
       :style="`--screen-color: ${validColor}; --screen-text: ${previewText}`"
       type="button"
@@ -41,6 +42,7 @@ const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEn
       <span class="preview-action"
         >{t.fullscreen} <span aria-hidden="true">↗</span></span
       >
+      <span class="fullscreen-exit" x-show="isFullscreen" x-cloak aria-hidden="true">×</span>
     </button>
   </section>
 
